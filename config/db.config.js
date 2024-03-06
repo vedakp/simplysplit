@@ -35,5 +35,4 @@ const db = {
   }
 
 }
-//module.exports = dbConn;
 module.exports = db;

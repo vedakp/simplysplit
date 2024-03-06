@@ -1,5 +1,5 @@
 "use strict";
-var dbConn = require("../config/db.config");
+const db = require('./../config/db.config');
 
 //User object create
 var Transaction = function (transaction) {
@@ -14,75 +14,94 @@ var Transaction = function (transaction) {
 };
 
 Transaction.findAll = function (result) {
-  dbConn.query("Select * from transactions", function (err, res) {
-    if (err) {
-      console.log("error: ", err);
-      result(null, err);
-    } else {
-      console.log("Users : ", res);
-      result(null, res);
-    }
+  db.execute().then(dbConn =>{
+    dbConn.query("Select * from transactions", function (err, res) {
+      if (err) {
+        console.log("error: ", err);
+        result(null, err);
+      } else {
+        console.log("Users : ", res);
+        result(null, res);
+      }
+      dbConn.end(err=>{ console.log("DB connection Closed!")});
+    })
   });
 };
 
 Transaction.findById = function (id, result) {
-  dbConn.query("Select * from transactions where id = ? ", id, function (err, res) {
-    if (err) {
-      console.log("error: ", err);
-      result(err, null);
-    } else {
-      result(null, res);
-    }
+  db.execute().then(dbConn =>{
+    dbConn.query("Select * from transactions where id = ? ", id, function (err, res) {
+      if (err) {
+        console.log("error: ", err);
+        result(err, null);
+      } else {
+        result(null, res);
+      }
+      dbConn.end(err=>{ console.log("DB connection Closed!")});
+    })
   });
 };
 
 Transaction.findByUserId = function (id, result) {
-  dbConn.query("Select * from transactions where user_id = ? ", id, function (err, res) {
-    if (err) {
-      console.log("error: ", err);
-      result(err, null);
-    } else {
-      result(null, res);
-    }
+  db.execute().then(dbConn =>{
+    dbConn.query("Select * from transactions where user_id = ? ", id, function (err, res) {
+      if (err) {
+        console.log("error: ", err);
+        result(err, null);
+      } else {
+        result(null, res);
+      }
+      dbConn.end(err=>{ console.log("DB connection Closed!")});
+    })
   });
 };
 
 Transaction.findByGroupId = function (id, result) {
-  dbConn.query("Select * from transactions where group_id = ? ", id, function (err, res) {
-    if (err) {
-      console.log("error: ", err);
-      result(err, null);
-    } else {
-      result(null, res);
-    }
+  db.execute().then(dbConn =>{
+    dbConn.query("Select * from transactions where group_id = ? ", id, function (err, res) {
+      if (err) {
+        console.log("error: ", err);
+        result(err, null);
+      } else {
+        result(null, res);
+      }
+      dbConn.end(err=>{ console.log("DB connection Closed!")});
+    })
   });
 };
 
 Transaction.getActiveTractionsByUser = function (id, result) {
-  dbConn.query("Select * from transactions where is_deleted != 1 AND user_id = ?", id, function (err, res) {
-    if (err) {
-      console.log("error: ", err);
-      result(err, null);
-    } else {
-      result(null, res);
-    }
+  db.execute().then(dbConn =>{
+    dbConn.query("Select * from transactions where is_deleted != 1 AND user_id = ?", id, function (err, res) {
+      if (err) {
+        console.log("error: ", err);
+        result(err, null);
+      } else {
+        result(null, res);
+      }
+      dbConn.end(err=>{ console.log("DB connection Closed!")});
+    })
   });
 };
 
 Transaction.create = function (newTransaction, result) {
-  dbConn.query("INSERT INTO transactions set ?", newTransaction, function (err, res) {
-    if (err) {
-      console.log("error: ", err);
-      result(err, null);
-    } else {
-      console.log(res.insertId);
-      result(null, res.insertId);
-    }
+  db.execute().then(dbConn =>{
+    dbConn.query("INSERT INTO transactions set ?", newTransaction, function (err, res) {
+      if (err) {
+        console.log("error: ", err);
+        result(err, null);
+      } else {
+        console.log(res.insertId);
+        result(null, res.insertId);
+      }
+      dbConn.end(err=>{ console.log("DB connection Closed!")});
+    })
   });
 };
 
 Transaction.update = function (id, transaction, result) {
-    let dateTime = +new Date();
+  let dateTime = +new Date();
+  db.execute().then(dbConn =>{
   dbConn.query(
     "UPDATE transactions SET user_id=?,group_id=?,amount=?,currency=?,currency_symbol=?,updated_at=? WHERE id = ?",
     [
@@ -101,18 +120,22 @@ Transaction.update = function (id, transaction, result) {
       } else {
         result(null, res);
       }
-    }
-  );
+      dbConn.end(err=>{ console.log("DB connection Closed!")});
+    })
+  });
 };
 
 Transaction.delete = function (id, result) {
-  dbConn.query("UPDATE transactions SET is_deleted=1 WHERE id = ?", [id], function (err, res) {
-    if (err) {
-      console.log("error: ", err);
-      result(null, err);
-    } else {
-      result(null, res);
-    }
+  db.execute().then(dbConn =>{
+    dbConn.query("UPDATE transactions SET is_deleted=1 WHERE id = ?", [id], function (err, res) {
+      if (err) {
+        console.log("error: ", err);
+        result(null, err);
+      } else {
+        result(null, res);
+      }
+      dbConn.end(err=>{ console.log("DB connection Closed!")});
+    })
   });
 };
 
