@@ -1,5 +1,11 @@
 'use strict';
 const mysql = require('mysql');
+const mysqlConfig = {
+  host     : 'srv999.hstgr.io',
+  user     : 'u254608202_admin',
+  password : 'G85a5seQjvy2avB',
+  database : 'u254608202_simplysplit'
+};
 //local mysql db connection
 /*
 const dbConn = mysql.createConnection({
@@ -9,33 +15,25 @@ const dbConn = mysql.createConnection({
   database : 'simplysplit_db'
 });
 */
-const dbConn = mysql.createConnection({
-  host     : 'srv999.hstgr.io',
-  user     : 'u254608202_admin',
-  password : 'G85a5seQjvy2avB',
-  database : 'u254608202_simplysplit'
-});
-/*
-dbConn.connect(function(err) {
-  try{
-    if (err) 
-      console.log("DB Error =>",err);
+var dbConn = mysql.createConnection(mysqlConfig);
+
+const db = {
+  execute : ()=>{
+    return new Promise(async (resolve , reject)=>{
+      dbConn = await mysql.createConnection(mysqlConfig);
+      await dbConn.connect((err) => {
+        console.log("DB Connected!");
+        if (!err) {
+          resolve(dbConn)
+        }else{
+          console.log("DB Error =>",err)
+          //reject(err)
+        }
+      })
+    })
     
-      console.log("Database Connected!");
-  }catch(err){
-    console.log("Catched DB Connect Err =>",err)
-  }
-})
-*/
-/*
-dbConn.end((error) => {
-  if (error) {
-    console.error('Error closing MySQL connection:', error);
-    return;
   }
 
-  console.log('MySQL connection closed.');
-})}
-
-*/
-module.exports = dbConn;
+}
+//module.exports = dbConn;
+module.exports = db;

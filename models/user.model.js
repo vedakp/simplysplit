@@ -1,6 +1,6 @@
 "use strict";
-var dbConn = require("./../config/db.config");
-var db = require("./../config/db.config");
+//var dbConn = require("./../config/db.config");
+const db = require('./../config/db.config');
 
 //User object create
 var User = function (user) {
@@ -13,30 +13,24 @@ var User = function (user) {
   this.updated_at = new Date();
 };
 
-User.findAll = function (result) {
-  // db.connect();
-  dbConn.connect(function (err) {
-    if (!err) {
-      console.log("Connected!");
-      dbConn.query("Select * from users", function (err, res) {
-        if (err) {
-          console.log("error: ", err);
-          result(null, err);
-        } else {
-          console.log("Users : ", res);
-          result(null, res);
-        }
-        dbConn.end((error) => {
-          console.log("Closed connection");
-        });
-      });
-    } else {
-      console.log("DB Connect error");
-    }
-  });
 
-  //db.diconnect();
-};
+User.findAll = async function (result) {
+  db.execute().then(dbConn =>{
+    
+    dbConn.query("Select * from users", function (err, res) {
+      if (err) {
+        console.log("error: ", err);
+        result(null, err);
+      } else {
+        result(null, res);
+      }
+      dbConn.end(err=>{
+        console.log("DB connection Closed!");
+      });
+    })
+  })
+
+}
 
 User.findById = function (id, result) {
   dbConn.connect(function (err) {
