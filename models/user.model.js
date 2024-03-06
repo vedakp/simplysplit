@@ -1,5 +1,6 @@
 "use strict";
 var dbConn = require("./../config/db.config");
+var db = require("./../config/db.config");
 
 //User object create
 var User = function (user) {
@@ -13,24 +14,51 @@ var User = function (user) {
 };
 
 User.findAll = function (result) {
-  dbConn.query("Select * from users", function (err, res) {
-    if (err) {
-      console.log("error: ", err);
-      result(null, err);
+  // db.connect();
+  dbConn.connect(function (err) {
+    if (!err) {
+      console.log("Connected!");
+      dbConn.query("Select * from users", function (err, res) {
+        if (err) {
+          console.log("error: ", err);
+          result(null, err);
+        } else {
+          console.log("Users : ", res);
+          result(null, res);
+        }
+        dbConn.end((error) => {
+          console.log("Closed connection");
+        });
+      });
     } else {
-      console.log("Users : ", res);
-      result(null, res);
+      console.log("DB Connect error");
     }
   });
+
+  //db.diconnect();
 };
 
 User.findById = function (id, result) {
-  dbConn.query("Select * from users where id = ? ", id, function (err, res) {
-    if (err) {
-      console.log("error: ", err);
-      result(err, null);
+  dbConn.connect(function (err) {
+    if (!err) {
+      console.log("Connected!");
+      dbConn.query(
+        "Select * from users where id = ? ",
+        id,
+        function (err, res) {
+          if (err) {
+            console.log("error: ", err);
+            result(err, null);
+          } else {
+            result(null, res);
+          }
+          dbConn.end((error) => {
+            console.log("Closed connection");
+          });
+        }
+      );
     } else {
-      result(null, res);
+      console.log("DB Connect error");
     }
   });
 };
@@ -48,7 +76,7 @@ User.create = function (newUser, result) {
 };
 
 User.update = function (id, user, result) {
-    let dateTime = +new Date();
+  let dateTime = +new Date();
   dbConn.query(
     "UPDATE users SET first_name=?,last_name=?,email=?,phone=?,username=?,updated_at=? WHERE id = ?",
     [
@@ -57,7 +85,7 @@ User.update = function (id, user, result) {
       user.email,
       user.phone,
       user.username,
-      user.updated_at = dateTime,
+      (user.updated_at = dateTime),
       id,
     ],
     function (err, res) {
@@ -83,4 +111,3 @@ User.delete = function (id, result) {
 };
 
 module.exports = User;
-

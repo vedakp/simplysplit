@@ -1,5 +1,6 @@
 "use strict";
 var dbConn = require("../config/db.config");
+var db = require("../config/db.config");
 
 //User object create
 var Split = function (split) {

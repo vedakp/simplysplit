@@ -15,7 +15,7 @@ const dbConn = mysql.createConnection({
   password : 'G85a5seQjvy2avB',
   database : 'u254608202_simplysplit'
 });
-
+/*
 dbConn.connect(function(err) {
   try{
     if (err) 
@@ -25,7 +25,17 @@ dbConn.connect(function(err) {
   }catch(err){
     console.log("Catched DB Connect Err =>",err)
   }
-  
-});
+})
+*/
+/*
+dbConn.end((error) => {
+  if (error) {
+    console.error('Error closing MySQL connection:', error);
+    return;
+  }
 
+  console.log('MySQL connection closed.');
+})}
+
+*/
 module.exports = dbConn;
