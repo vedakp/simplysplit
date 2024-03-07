@@ -10,8 +10,8 @@ exports.findAll = function (req, res) {
   });
 };
 
-exports.findById = function (req, res) {
-  Split.findById(req.params.id, function (err, user) {
+exports.findByTransactionId = function (req, res) {
+  Split.findByTransactionId(req.params.id, function (err, user) {
     if (err) res.send(err);
     res.json(user);
   });

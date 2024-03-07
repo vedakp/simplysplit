@@ -17,6 +17,13 @@ exports.findById = function (req, res) {
   });
 };
 
+exports.getActiveTractionsByUser = function (req, res) {
+  Transaction.getActiveTractionsByUser(req.params.id, function (err, user) {
+    if (err) res.send(err);
+    res.json(user);
+  });
+};
+
 exports.create = function (req, res) {
   const new_transaction = new Transaction(req.body);
   //handles null error

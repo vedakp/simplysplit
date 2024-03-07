@@ -73,7 +73,10 @@ Transaction.findByGroupId = function (id, result) {
 
 Transaction.getActiveTractionsByUser = function (id, result) {
   db.execute().then(dbConn =>{
-    dbConn.query("Select * from transactions where is_deleted != 1 AND user_id = ?", id, function (err, res) {
+    let sql = `Select DISTINCT tx.* from transactions as tx
+    left join splits as sp on sp.trx_id = tx.id
+    where is_deleted = 0 AND (sp.from_user_id = ? OR sp.to_user_id = ?)`
+    dbConn.query(sql, [id,id], function (err, res) {
       if (err) {
         console.log("error: ", err);
         result(err, null);

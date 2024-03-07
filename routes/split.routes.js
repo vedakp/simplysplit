@@ -50,7 +50,7 @@ router.get("/",splitController.findAll);
  * 
  */
 
-router.get("/:id", splitController.findById);
+router.get("/:id", splitController.findByTransactionId);
 
 /**
  * @swagger

@@ -58,14 +58,30 @@ Split.findByUserId = function (id, result) {
 
 Split.findByTransactionId = function (id, result) {
   db.execute().then(dbConn =>{
-    dbConn.query("Select * from splits where trx_id = ? ", id, function (err, res) {
-      if (err) {
+    var res = {};
+    dbConn.query("Select * from transactions where id = ? ", id, function (err, transactionRes) {
+      if (!err) {
+        if(transactionRes.length > 0){
+          res = transactionRes[0];
+          dbConn.query("Select * from splits where trx_id = ? ", id, function (err, splitRes) {
+            if (err) {
+              console.log("error: ", err);
+              result(err, null);
+            } else {
+              res['splits'] = splitRes;
+              result(null, res);
+            }
+            dbConn.end(err=>{ console.log("DB connection Closed!")});
+          });
+        }else{
+          result(null, {});
+          dbConn.end(err=>{ console.log("DB connection Closed!")});
+        }
+      }else{
         console.log("error: ", err);
         result(err, null);
-      } else {
-        result(null, res);
+        dbConn.end(err=>{ console.log("DB connection Closed!")});
       }
-      dbConn.end(err=>{ console.log("DB connection Closed!")});
     });
   });
 };

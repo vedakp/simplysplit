@@ -54,6 +54,35 @@ router.get("/:id", transactionController.findById);
 
 /**
  * @swagger
+ * /transaction/user/{userId}:
+ *  get:
+ *    tags:
+ *      - Transactions
+ *    summary: To get transaction details by Id
+ *    description: Send the transaction Id to fetch transaction
+ *    parameters:
+ *      - name: transactionId
+ *        in: path
+ *        description: ID of pet to return
+ *        required: true
+ *        schema:
+ *          type: integer
+ *          format: int64
+ *    requestBody:
+ *      content:
+ *        application/json:
+ *    responses:
+ *      200:
+ *        description: Transaction created success
+ *      500:
+ *        description: failed to create
+ * 
+ */
+
+router.get("/user/:id", transactionController.getActiveTractionsByUser);
+
+/**
+ * @swagger
  * /transaction:
  *  post:
  *    tags:
