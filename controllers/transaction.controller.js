@@ -24,8 +24,48 @@ exports.create = function (req, res) {
     res
       .status(400)
       .send({ error: true, message: "Please provide all required field" });
-  } else {
-    Transaction.create(new_transaction, function (err, user) {
+  } 
+
+  else if (!req.body.splits || req.body.splits.length <= 0) {
+    res
+      .status(400)
+      .send({ error: true, message: "Please provide all required users" });
+  } 
+
+  else if (req.body.amount <= 0) {
+    res
+      .status(400)
+      .send({ error: true, message: "Please provide valid split amount" });
+  } 
+
+  else if (!req.body.user_id) {
+    res
+      .status(400)
+      .send({ error: true, message: "Please provide valid user info" });
+  } 
+  
+  else {
+    let transactionData = {
+      user_id: new_transaction.user_id,
+      group_id: new_transaction.group_id,
+      amount: new_transaction.amount,
+      currency: new_transaction.currency,
+      currency_symbol: new_transaction.currency_symbol,
+    }
+
+    let splitData = [];
+
+    req.body.splits.forEach((element) => {
+      splitData.push([
+        element.from_user_id,
+        element.to_user_id,
+        element.amount,
+        element.share_percentage,
+        element.share_qnt,
+      ])
+    })
+
+    Transaction.create(transactionData,splitData, function (err, user) {
       if (err) res.send(err);
       res.json({
         error: false,

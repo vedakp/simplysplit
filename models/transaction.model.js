@@ -1,5 +1,6 @@
 "use strict";
 const db = require('./../config/db.config');
+const Split = require('./../models/split.model');
 
 //User object create
 var Transaction = function (transaction) {
@@ -84,14 +85,27 @@ Transaction.getActiveTractionsByUser = function (id, result) {
   });
 };
 
-Transaction.create = function (newTransaction, result) {
+Transaction.create = function (transactionData,splitData, result) {
   db.execute().then(dbConn =>{
-    dbConn.query("INSERT INTO transactions set ?", newTransaction, function (err, res) {
+    dbConn.query("INSERT INTO transactions set ?", transactionData, function (err, res) {
       if (err) {
         console.log("error: ", err);
         result(err, null);
       } else {
         console.log(res.insertId);
+        console.log("Splits",splitData)
+        for(let i = 0; i < splitData.length; i++){
+          splitData[i].push(res.insertId)
+        }
+        let splitSql = "INSERT INTO splits (from_user_id,to_user_id,amount,share_percentage,share_qnt,trx_id) VALUES ?";
+        dbConn.query(splitSql, [splitData], function (err, splitres) {
+          if (err) {
+            console.log("error: ", err);
+            result(err, null);
+          }else{
+            console.log("Split created",splitres)
+          }
+        })
         result(null, res.insertId);
       }
       dbConn.end(err=>{ console.log("DB connection Closed!")});
