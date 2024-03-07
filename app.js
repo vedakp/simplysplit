@@ -1,18 +1,23 @@
 const express = require("express");
+const session = require("express-session");
 const bodyParser = require("body-parser");
 const swaggerJsdoc = require("swagger-jsdoc");
 const swaggerUi = require("swagger-ui-express");
 const createError = require("http-errors");
 const morgan = require("morgan");
 const cors = require("cors");
+const SYS = require("./config/sys.config");
 
 const app = express();
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-//app.use(morgan("dev"));
-//app.use(cors());
-//app.options('*', cors())
+app.use(session({
+  resave:false,
+  saveUninitialized: true,
+  secret: SYS.SECERET_KEY
+}))
+
 var whitelist = ['http://localhost:8000', 'http://192.168.1.100']; //white list consumers
 var corsOptions = {
   origin: function (origin, callback) {
@@ -30,6 +35,7 @@ var corsOptions = {
 
 app.use(cors(corsOptions)); 
 
+app.set("view engine","ejs")
 
 const options = {
   definition: {
@@ -60,6 +66,7 @@ app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(specs));
 app.use("/user", require("./routes/user.routes"));
 app.use("/transaction", require("./routes/transaction.routes"));
 app.use("/split", require("./routes/split.routes"));
+app.use("/auth", require("./routes/auth.routes"));
 
 
 app.get("/", async (req, res, next) => {
